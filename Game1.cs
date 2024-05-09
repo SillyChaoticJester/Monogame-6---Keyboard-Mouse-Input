@@ -6,7 +6,7 @@ namespace Monogame_6___Keyboard___Mouse_Input
 {
     public class Game1 : Game
     {
-        Texture2D pacTexture;
+        Texture2D pacRightTexture, pacLeftTexture, pacUpTexture, pacDownTexture, pacSleepTexture;
         Rectangle pacLocation;
         KeyboardState keyboardState;
 
@@ -24,6 +24,8 @@ namespace Monogame_6___Keyboard___Mouse_Input
         {
             // TODO: Add your initialization logic here
 
+            pacLocation = new Rectangle(10, 10, 75, 75);
+
             base.Initialize();
         }
 
@@ -33,7 +35,11 @@ namespace Monogame_6___Keyboard___Mouse_Input
 
             // TODO: use this.Content to load your game content here
 
-            pacTexture = Content.Load<Texture2D>("PacRight");
+            pacRightTexture = Content.Load<Texture2D>("PacRight");
+            pacLeftTexture = Content.Load<Texture2D>("PacLeft");
+            pacUpTexture = Content.Load<Texture2D>("PacUp");
+            pacDownTexture = Content.Load<Texture2D>("PacDown");
+            pacSleepTexture = Content.Load<Texture2D>("PacSleep");
         }
 
         protected override void Update(GameTime gameTime)
@@ -71,6 +77,31 @@ namespace Monogame_6___Keyboard___Mouse_Input
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+
+            _spriteBatch.Begin();
+
+            if (keyboardState.IsKeyDown(Keys.Up))
+            {
+                _spriteBatch.Draw(pacUpTexture, pacLocation, Color.White);
+            }
+            else if (keyboardState.IsKeyDown(Keys.Down))
+            {
+                _spriteBatch.Draw(pacDownTexture, pacLocation, Color.White);
+            }
+            else if (keyboardState.IsKeyDown(Keys.Left))
+            {
+                _spriteBatch.Draw(pacLeftTexture, pacLocation, Color.White);
+            }
+            else if (keyboardState.IsKeyDown(Keys.Right))
+            {
+                _spriteBatch.Draw(pacRightTexture, pacLocation, Color.White);
+            }
+            else
+            {
+                _spriteBatch.Draw(pacSleepTexture, pacLocation, Color.White);
+            }
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
