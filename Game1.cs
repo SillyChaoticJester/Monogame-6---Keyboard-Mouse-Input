@@ -23,8 +23,11 @@ namespace Monogame_6___Keyboard___Mouse_Input
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            _graphics.PreferredBackBufferWidth = 800;
+            _graphics.PreferredBackBufferHeight = 500;
+            this.Window.Title = "Keyboard and Mouse Stuff";
             pacLocation = new Rectangle(10, 10, 75, 75);
+            _graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -68,6 +71,14 @@ namespace Monogame_6___Keyboard___Mouse_Input
                 pacLocation.X += 2;
             }
 
+            if (pacLocation.Right > _graphics.PreferredBackBufferWidth || pacLocation.Left < 0)
+            {
+                pacLocation.X *= -1;
+            }
+            if (pacLocation.Bottom > _graphics.PreferredBackBufferHeight || pacLocation.Top < 0)
+            {
+                pacLocation.Y *= -1;
+            }
 
             base.Update(gameTime);
         }
