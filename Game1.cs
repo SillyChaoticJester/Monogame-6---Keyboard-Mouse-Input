@@ -9,7 +9,10 @@ namespace Monogame_6___Keyboard___Mouse_Input
         Texture2D pacRightTexture, pacLeftTexture, pacUpTexture, pacDownTexture, pacSleepTexture;
         Rectangle pacLocation;
         KeyboardState keyboardState;
+        SpriteFont text;
+        int speed;
 
+        private KeyboardState oldState;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -27,6 +30,7 @@ namespace Monogame_6___Keyboard___Mouse_Input
             _graphics.PreferredBackBufferHeight = 500;
             this.Window.Title = "Keyboard and Mouse Stuff";
             pacLocation = new Rectangle(10, 10, 75, 75);
+            speed = 2;
             _graphics.ApplyChanges();
 
             base.Initialize();
@@ -43,6 +47,7 @@ namespace Monogame_6___Keyboard___Mouse_Input
             pacUpTexture = Content.Load<Texture2D>("PacUp");
             pacDownTexture = Content.Load<Texture2D>("PacDown");
             pacSleepTexture = Content.Load<Texture2D>("PacSleep");
+            text = Content.Load<SpriteFont>("speedtext");
         }
 
         protected override void Update(GameTime gameTime)
@@ -53,31 +58,47 @@ namespace Monogame_6___Keyboard___Mouse_Input
             // TODO: Add your update logic here
 
             keyboardState = Keyboard.GetState();
+            KeyboardState newState = Keyboard.GetState();
+
+            if (oldState.IsKeyUp(Keys.E) && newState.IsKeyDown(Keys.E))
+            {
+                speed++;
+            }
+            if (oldState.IsKeyUp(Keys.Q) && newState.IsKeyDown(Keys.Q))
+            {
+                speed--;
+            }
+            if (oldState.IsKeyUp(Keys.W) && newState.IsKeyDown(Keys.W))
+            {
+                speed = 2;
+            }
+
+            oldState = newState;  
 
             if (keyboardState.IsKeyDown(Keys.Up))
             {
-                pacLocation.Y -= 2;
+                pacLocation.Y -= speed;
             }
             if (keyboardState.IsKeyDown(Keys.Down))
             {
-                pacLocation.Y += 2;
+                pacLocation.Y += speed;
             }
             if (keyboardState.IsKeyDown(Keys.Left))
             {
-                pacLocation.X -= 2;
+                pacLocation.X -= speed;
             }
             if (keyboardState.IsKeyDown(Keys.Right))
             {
-                pacLocation.X += 2;
+                pacLocation.X += speed;
             }
 
             if (pacLocation.Right > _graphics.PreferredBackBufferWidth || pacLocation.Left < 0)
             {
-                pacLocation.X *= -1;
+                pacLocation.X *= -2;
             }
             if (pacLocation.Bottom > _graphics.PreferredBackBufferHeight || pacLocation.Top < 0)
             {
-                pacLocation.Y *= -1;
+                pacLocation.Y *= -2;
             }
 
             base.Update(gameTime);
@@ -90,6 +111,8 @@ namespace Monogame_6___Keyboard___Mouse_Input
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
+
+            _spriteBatch.DrawString(text, "Speed: " + speed, new Vector2(0, 0), Color.Black);
 
             if (keyboardState.IsKeyDown(Keys.Up))
             {
