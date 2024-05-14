@@ -1,16 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Monogame_6___Keyboard___Mouse_Input
 {
     public class Game1 : Game
     {
-        Texture2D pacRightTexture, pacLeftTexture, pacUpTexture, pacDownTexture, pacSleepTexture;
-        Rectangle pacLocation;
+        Texture2D pacRightTexture, pacLeftTexture, pacUpTexture, pacDownTexture, pacSleepTexture, exitTexture, barrierTexture, coinTexture;
+        Rectangle pacLocation, exitRect, barrierRect1, barrierRect2;
+        List<Rectangle> coins;
         KeyboardState keyboardState;
         SpriteFont text;
-        int speed;
+        int speed, speedHelp;
 
         private KeyboardState oldState;
         private GraphicsDeviceManager _graphics;
@@ -31,6 +33,15 @@ namespace Monogame_6___Keyboard___Mouse_Input
             this.Window.Title = "Keyboard and Mouse Stuff";
             pacLocation = new Rectangle(10, 10, 75, 75);
             speed = 2;
+            speedHelp = speed - 1;
+            barrierRect1 = new Rectangle(0, 250, 350, 75);
+            barrierRect2 = new Rectangle(450, 250, 350, 75);
+            coins = new List<Rectangle>();
+            coins.Add(new Rectangle(400, 50, coinTexture.Width, coinTexture.Height));
+            coins.Add(new Rectangle(475, 50, coinTexture.Width, coinTexture.Height));
+            coins.Add(new Rectangle(200, 300, coinTexture.Width, coinTexture.Height));
+            coins.Add(new Rectangle(400, 300, coinTexture.Width, coinTexture.Height));
+            exitRect = new Rectangle(700, 380, 100, 100);
             _graphics.ApplyChanges();
 
             base.Initialize();
@@ -48,6 +59,10 @@ namespace Monogame_6___Keyboard___Mouse_Input
             pacDownTexture = Content.Load<Texture2D>("PacDown");
             pacSleepTexture = Content.Load<Texture2D>("PacSleep");
             text = Content.Load<SpriteFont>("speedtext");
+
+            barrierTexture = Content.Load<Texture2D>("rock_barrier");
+            exitTexture = Content.Load<Texture2D>("hobbit_door");
+            coinTexture = Content.Load<Texture2D>("coin");
         }
 
         protected override void Update(GameTime gameTime)
@@ -94,11 +109,20 @@ namespace Monogame_6___Keyboard___Mouse_Input
 
             if (pacLocation.Right > _graphics.PreferredBackBufferWidth || pacLocation.Left < 0)
             {
-                pacLocation.X *= -2;
+                pacLocation.X *= -speedHelp;
             }
             if (pacLocation.Bottom > _graphics.PreferredBackBufferHeight || pacLocation.Top < 0)
             {
-                pacLocation.Y *= -2;
+                pacLocation.Y *= -speedHelp;
+            }
+
+            for (int i = 0; i < coins.Count; i++)
+            {
+                if (pacRect.Intersects(coins[i]))
+                {
+                    coins.RemoveAt(i);
+                    i--;
+                }
             }
 
             base.Update(gameTime);
@@ -111,8 +135,6 @@ namespace Monogame_6___Keyboard___Mouse_Input
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
-
-            _spriteBatch.DrawString(text, "Speed: " + speed, new Vector2(0, 0), Color.Black);
 
             if (keyboardState.IsKeyDown(Keys.Up))
             {
@@ -134,6 +156,13 @@ namespace Monogame_6___Keyboard___Mouse_Input
             {
                 _spriteBatch.Draw(pacSleepTexture, pacLocation, Color.White);
             }
+
+            _spriteBatch.Draw(barrierTexture, barrierRect1, Color.White);
+            _spriteBatch.Draw(barrierTexture, barrierRect2, Color.White);
+            _spriteBatch.Draw(exitTexture, exitRect, Color.White);
+            foreach (Rectangle coin in coins)
+                _spriteBatch.Draw(coinTexture, coin, Color.White);
+            _spriteBatch.DrawString(text, "Speed: " + speed, new Vector2(0, 0), Color.Black);
 
             _spriteBatch.End();
 
