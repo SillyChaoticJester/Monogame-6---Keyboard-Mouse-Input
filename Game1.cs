@@ -11,6 +11,7 @@ namespace Monogame_6___Keyboard___Mouse_Input
         Rectangle pacLocation, exitRect, barrierRect1, barrierRect2;
         List<Rectangle> coins;
         KeyboardState keyboardState;
+        MouseState mouseState;
         SpriteFont text;
         int speed, speedHelp;
 
@@ -37,10 +38,10 @@ namespace Monogame_6___Keyboard___Mouse_Input
             barrierRect1 = new Rectangle(0, 250, 350, 75);
             barrierRect2 = new Rectangle(450, 250, 350, 75);
             coins = new List<Rectangle>();
-            coins.Add(new Rectangle(400, 50, coinTexture.Width, coinTexture.Height));
-            coins.Add(new Rectangle(475, 50, coinTexture.Width, coinTexture.Height));
-            coins.Add(new Rectangle(200, 300, coinTexture.Width, coinTexture.Height));
-            coins.Add(new Rectangle(400, 300, coinTexture.Width, coinTexture.Height));
+            coins.Add(new Rectangle(400, 50, 50, 50));
+            coins.Add(new Rectangle(475, 50, 50, 50));
+            coins.Add(new Rectangle(200, 300, 50, 50));
+            coins.Add(new Rectangle(400, 300, 50, 50));
             exitRect = new Rectangle(700, 380, 100, 100);
             _graphics.ApplyChanges();
 
@@ -74,6 +75,7 @@ namespace Monogame_6___Keyboard___Mouse_Input
 
             keyboardState = Keyboard.GetState();
             KeyboardState newState = Keyboard.GetState();
+            mouseState = Mouse.GetState();
 
             if (oldState.IsKeyUp(Keys.E) && newState.IsKeyDown(Keys.E))
             {
@@ -118,12 +120,15 @@ namespace Monogame_6___Keyboard___Mouse_Input
 
             for (int i = 0; i < coins.Count; i++)
             {
-                if (pacRect.Intersects(coins[i]))
+                if (pacLocation.Intersects(coins[i]))
                 {
                     coins.RemoveAt(i);
                     i--;
                 }
             }
+            if (mouseState.LeftButton == ButtonState.Pressed)
+                if (exitRect.Contains(mouseState.X, mouseState.Y))
+                    Exit();
 
             base.Update(gameTime);
         }
