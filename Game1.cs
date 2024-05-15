@@ -8,8 +8,9 @@ namespace Monogame_6___Keyboard___Mouse_Input
     public class Game1 : Game
     {
         Texture2D pacRightTexture, pacLeftTexture, pacUpTexture, pacDownTexture, pacSleepTexture, exitTexture, barrierTexture, coinTexture;
-        Rectangle pacLocation, exitRect, barrierRect1, barrierRect2;
+        Rectangle pacLocation, exitRect;
         List<Rectangle> coins;
+        List<Rectangle> barriers;
         KeyboardState keyboardState;
         MouseState mouseState;
         SpriteFont text;
@@ -35,8 +36,9 @@ namespace Monogame_6___Keyboard___Mouse_Input
             pacLocation = new Rectangle(10, 10, 75, 75);
             speed = 2;
             speedHelp = speed - 1;
-            barrierRect1 = new Rectangle(0, 250, 350, 75);
-            barrierRect2 = new Rectangle(450, 250, 350, 75);
+            barriers = new List<Rectangle>();
+            barriers.Add(new Rectangle(0, 250, 350, 75));
+            barriers.Add(new Rectangle(450, 250, 350, 75));
             coins = new List<Rectangle>();
             coins.Add(new Rectangle(400, 50, 50, 50));
             coins.Add(new Rectangle(475, 50, 50, 50));
@@ -118,6 +120,10 @@ namespace Monogame_6___Keyboard___Mouse_Input
                 pacLocation.Y *= -speedHelp;
             }
 
+            //foreach (Rectangle barrier in barriers)
+            //    if (pacLocation.Intersects(barrier))
+                    //pacLocation.Offset(-pacSpeed);
+
             for (int i = 0; i < coins.Count; i++)
             {
                 if (pacLocation.Intersects(coins[i]))
@@ -126,6 +132,10 @@ namespace Monogame_6___Keyboard___Mouse_Input
                     i--;
                 }
             }
+
+            if (exitRect.Contains(pacLocation))
+                Exit(); 
+
             if (mouseState.LeftButton == ButtonState.Pressed)
                 if (exitRect.Contains(mouseState.X, mouseState.Y))
                     Exit();
@@ -162,8 +172,8 @@ namespace Monogame_6___Keyboard___Mouse_Input
                 _spriteBatch.Draw(pacSleepTexture, pacLocation, Color.White);
             }
 
-            _spriteBatch.Draw(barrierTexture, barrierRect1, Color.White);
-            _spriteBatch.Draw(barrierTexture, barrierRect2, Color.White);
+            foreach (Rectangle barrier in barriers)
+                _spriteBatch.Draw(barrierTexture, barrier, Color.White);
             _spriteBatch.Draw(exitTexture, exitRect, Color.White);
             foreach (Rectangle coin in coins)
                 _spriteBatch.Draw(coinTexture, coin, Color.White);
